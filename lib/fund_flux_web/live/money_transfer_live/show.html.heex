@@ -1,0 +1,26 @@
+<.header>
+  Money transfer <%= @money_transfer.id %>
+  <:subtitle>This is a money_transfer record from your database.</:subtitle>
+  <:actions>
+    <.link patch={~p"/money_transfers/#{@money_transfer.id}/edit"} phx-click={JS.push_focus()}>
+      <.button>Edit money_transfer</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Amount"><%= @money_transfer.amount %></:item>
+</.list>
+
+<.back navigate={~p"/money_transfers"}>Back to money_transfers</.back>
+
+<.modal :if={@live_action == :edit} id="money_transfer-modal" show on_cancel={JS.patch(~p"/money_transfers/#{@money_transfer.id}")}>
+  <.live_component
+    module={FundFluxWeb.MoneyTransferLive.FormComponent}
+    id={@money_transfer.id}
+    title={@page_title}
+    action={@live_action}
+    money_transfer={@money_transfer}
+    patch={~p"/money_transfers/#{@money_transfer.id}"}
+  />
+</.modal>

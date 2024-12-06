@@ -1,0 +1,118 @@
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 20px;
+  }
+
+  .form-container {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    max-width: 400px;
+    margin: auto;
+  }
+
+  h3 {
+    color: #333;
+    margin-bottom: 20px;
+  }
+
+  .form-group {
+    margin-bottom: 15px;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 5px;
+    color: #555;
+  }
+
+  input[type="email"],
+  input[type="text"],
+  input[type="number"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    transition: border-color 0.3s;
+  }
+
+  input[type="email"]:focus,
+  input[type="text"]:focus,
+  input[type="number"]:focus {
+    border-color: #007bff;
+    outline: none;
+  }
+
+  button[type="submit"] {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 15px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+  }
+
+  button[type="submit"]:hover {
+    background-color: #0056b3;
+  }
+
+  .back {
+    margin-top: 20px;
+    display: inline-block;
+    color: #007bff;
+    text-decoration: none;
+  }
+
+  .back:hover {
+    text-decoration: underline;
+  }
+</style>
+
+<.header>
+  Send Money
+</.header>
+
+<div class="form-container">
+  <h2>User Balances</h2>
+  <ul>
+    <%= for {email, balance} <- @balances do %>
+      <li><%= email %>: <%= balance %></li>
+    <% end %>
+  </ul>
+  <br>
+  <br>
+  <form phx-submit="transfer_money">
+    <div class="form-group">
+      <h3>Money Transfer Details</h3>
+      <label for="from_user_email">From User Email</label>
+      <input type="email" name="money_transfer[from_user_email]" id="from_user_email" required />
+  <br>
+  <br>
+      <label for="to_user_email">To User Email</label>
+      <input type="email" name="money_transfer[to_user_email]" id="to_user_email" required />
+  <br>
+      <label for="to_user_name">To User Name</label>
+      <input type="text" name="money_transfer[to_user_name]" id="to_user_name" required />
+    </div>
+    <br>
+    <div>
+      <label for="amount">Amount</label>
+      <input type="number" name="money_transfer[amount]" id="amount" step="0.01" required />
+    </div>
+<br>
+    <button type="submit">Submit</button>
+  </form>
+
+  <%= if @transfer_result do %>
+    <p><%= @transfer_result %></p>
+  <% end %>
+
+  <.back navigate={~p"/money_transfers"}>Back</.back>
+</div>

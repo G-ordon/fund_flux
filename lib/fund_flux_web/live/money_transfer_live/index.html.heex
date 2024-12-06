@@ -1,0 +1,41 @@
+<.header>
+  Transfer Records
+  <:actions>
+    <.link patch={~p"/money_transfers/new"}>
+      <.button>Send Money</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="money_transfers"
+  rows={@streams.money_transfers}
+  row_click={fn {_id, money_transfer} -> JS.navigate(~p"/money_transfers/#{money_transfer}") end}
+>
+  <:col :let={{_id, money_transfer}} label="Amount"><%= money_transfer.amount %></:col>
+  <:action :let={{_id, money_transfer}}>
+    <div class="sr-only">
+      <.link navigate={~p"/money_transfers/#{money_transfer}"}>Show</.link>
+    </div>
+    <.link patch={~p"/money_transfers/#{money_transfer}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, money_transfer}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: money_transfer.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal :if={@live_action in [:new, :edit]} id="money_transfer-modal" show on_cancel={JS.patch(~p"/money_transfers")}>
+  <.live_component
+    module={FundFluxWeb.MoneyTransferLive.FormComponent}
+    id={@money_transfer.id || :new}
+    title={@page_title}
+    action={@live_action}
+    money_transfer={@money_transfer}
+    patch={~p"/money_transfers"}
+  />
+</.modal>

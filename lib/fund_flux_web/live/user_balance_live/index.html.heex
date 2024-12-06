@@ -1,0 +1,41 @@
+<.header>
+  Listing User balances
+  <:actions>
+    <.link patch={~p"/user_balances/new"}>
+      <.button>New User balance</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table
+  id="user_balances"
+  rows={@streams.user_balances}
+  row_click={fn {_id, user_balance} -> JS.navigate(~p"/user_balances/#{user_balance}") end}
+>
+  <:col :let={{_id, user_balance}} label="Balance"><%= user_balance.balance %></:col>
+  <:action :let={{_id, user_balance}}>
+    <div class="sr-only">
+      <.link navigate={~p"/user_balances/#{user_balance}"}>Show</.link>
+    </div>
+    <.link patch={~p"/user_balances/#{user_balance}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={{id, user_balance}}>
+    <.link
+      phx-click={JS.push("delete", value: %{id: user_balance.id}) |> hide("##{id}")}
+      data-confirm="Are you sure?"
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>
+
+<.modal :if={@live_action in [:new, :edit]} id="user_balance-modal" show on_cancel={JS.patch(~p"/user_balances")}>
+  <.live_component
+    module={FundFluxWeb.UserBalanceLive.FormComponent}
+    id={@user_balance.id || :new}
+    title={@page_title}
+    action={@live_action}
+    user_balance={@user_balance}
+    patch={~p"/user_balances"}
+  />
+</.modal>
